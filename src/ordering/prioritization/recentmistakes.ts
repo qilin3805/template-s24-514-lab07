@@ -1,7 +1,19 @@
+// import { array, boolean } from 'yargs'
 import { CardStatus } from '../../cards/cardstatus.js'
 import { CardOrganizer } from '../cardorganizer.js'
 
 function newRecentMistakesFirstSorter (): CardOrganizer {
+  function correctness (cardStatus: CardStatus): number {
+    const results = cardStatus.getResults()
+    if (results.length === 0) {
+      return 1
+    }
+    if (!results[results.length - 1]) {
+      return -1
+    } else {
+      return 1
+    }
+  };
   /**
    * Computes the most recent mistake's time stamp for a card and helps in
    * determining the sequence of cards in the next iteration, based on the
@@ -18,7 +30,11 @@ function newRecentMistakesFirstSorter (): CardOrganizer {
      * @return The ordered cards.
      */
     reorganize: function (cards: CardStatus[]): CardStatus[] {
-      return []
+      const c = cards.slice()
+      c.sort((a, b) =>
+        correctness(a) < correctness(b) ? -1 : 1
+      )
+      return c
     }
   }
 };
